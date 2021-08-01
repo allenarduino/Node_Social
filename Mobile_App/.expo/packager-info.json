@@ -1,0 +1,10 @@
+{
+  "packagerPort": 19001,
+  "packagerPid": 11322,
+  "devToolsPort": 19002,
+  "expoServerPort": 19000,
+  "expoServerNgrokUrl": "https://pc-bbp.anonymous.teklife.exp.direct",
+  "packagerNgrokUrl": "https://packager.pc-bbp.anonymous.teklife.exp.direct",
+  "ngrokPid": 11407,
+  "webpackServerPort": null
+}
