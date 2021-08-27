@@ -11,8 +11,9 @@ import {
   Modal,
   TouchableWithoutFeedback
 } from "react-native";
+import URL from "./url";
 import { Header } from "react-native-elements";
-import { AuthContext } from "../App";
+import { AuthContext } from "../contexts/AuthContextProvider";
 import jwt_decode from "jwt-decode";
 import { Video, AVPlaybackStatus } from "expo-av";
 import Autolink from "react-native-autolink";
@@ -35,7 +36,7 @@ const Products = ({ navigation }) => {
   const [search, setSearch] = React.useState("");
   const [selectedId, setSelectedId] = React.useState(null);
   const { state, dispatch } = React.useContext(AuthContext);
-  let url = state.url;
+  let url =URL();
   const isFocused = useIsFocused();
 
   const toggleBottomSheet = () => {

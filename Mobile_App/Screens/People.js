@@ -8,10 +8,11 @@ import {
   StyleSheet,
   TextInput
 } from "react-native";
+import URL from "./url";
 import { List, ListItem, Header } from "react-native-elements";
 import { Avatar } from "react-native-elements/dist/avatar/Avatar";
 import { ScrollView, RectButton } from "react-native-gesture-handler";
-import { AuthContext } from "../App";
+import { AuthContext } from "../contexts/AuthContextProvider";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useIsFocused } from "@react-navigation/native";
 
@@ -24,8 +25,8 @@ const People = ({ navigation }) => {
   const [formVisible, setFormVisible] = React.useState(false);
   const [filteredData, setFilteredData] = React.useState([]);
   const [search, setSearch] = React.useState("");
-  const { state, dispatch } = React.useContext(AuthContext);
-  let url = state.url;
+  const { auth_state } = React.useContext(AuthContext);
+  let url = URL();
   const isFocused = useIsFocused();
 
   const showForm = () => {
@@ -34,7 +35,7 @@ const People = ({ navigation }) => {
 
   const fetch_users = () => {
     let myHeaders = new Headers();
-    myHeaders.append("x-access-token", state.token);
+    myHeaders.append("x-access-token", auth_state.token);
     myHeaders.append("Content-Type", "application/json");
     fetch(`${url}/users`, {
       method: "GET",

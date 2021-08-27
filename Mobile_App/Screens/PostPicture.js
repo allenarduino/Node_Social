@@ -10,9 +10,10 @@ import {
   Dimensions,
   TouchableOpacity
 } from "react-native";
+import URL from "./url";
 import HeaderButtons from "react-navigation-header-buttons";
 import { Header } from "react-native-elements";
-import { AuthContext } from "../App";
+import { AuthContext } from "../contexts/AuthContextProvider";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -26,8 +27,8 @@ const socket = io("http://10.74.12.37:4000", {
 
 const PostPicture = ({ route, navigation }) => {
   const MyContext = React.createContext(MyContext);
-  const { state, dispatch } = React.useContext(AuthContext);
-  let url = state.url;
+  const { auth_state } = React.useContext(AuthContext);
+  let url = URL();
   const initialState = {
     post_caption: "",
     post_media: ""
@@ -35,7 +36,7 @@ const PostPicture = ({ route, navigation }) => {
   const [mystate, setState] = React.useState(initialState);
   const [loading, controlLoading] = React.useState(false);
 
-  const token = state.token;
+  const token = auth_state.token;
   const decoded = jwt_decode(token);
   const user_id = decoded;
 
@@ -53,10 +54,10 @@ const PostPicture = ({ route, navigation }) => {
       type: `image/${fileType}`
     });
     data.append("post_caption", mystate.post_caption);
-    data.append("token", state.token);
+    data.append("token", auth_state.token);
     data.append("is_video", false);
     let myHeaders = new Headers();
-    myHeaders.append("x-access-token", state.token);
+    myHeaders.append("x-access-token", auth_state.token);
     fetch(`http://10.74.12.37:4000/create_post`, {
       method: "POST",
       body: data,

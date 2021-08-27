@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import HeaderButtons from "react-navigation-header-buttons";
 import { Header } from "react-native-elements";
-import { AuthContext } from "../App";
+import { AuthContext } from "../contexts/AuthContextProvider";
 import Autolink from "react-native-autolink";
 
 const WIDTH = Dimensions.get("window").width;

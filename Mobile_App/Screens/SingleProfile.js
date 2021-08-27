@@ -11,7 +11,7 @@ import {
   TouchableWithoutFeedback
 } from "react-native";
 import { Header } from "react-native-elements";
-import { AuthContext } from "../App";
+import { AuthContext } from "../contexts/AuthContextProvider";
 import jwt_decode from "jwt-decode";
 import { Video, AVPlaybackStatus } from "expo-av";
 import Autolink from "react-native-autolink";

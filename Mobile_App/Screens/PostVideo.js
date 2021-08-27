@@ -13,7 +13,8 @@ import {
 import HeaderButtons from "react-navigation-header-buttons";
 import { Header } from "react-native-elements";
 import { Video, AVPlaybackStatus } from "expo-av";
-import { AuthContext } from "../App";
+import URL from "./url";
+import { AuthContext } from "../contexts/AuthContextProvider";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -22,8 +23,8 @@ import jwt_decode from "jwt-decode";
 
 const PostVideo = ({ route, navigation }) => {
   const MyContext = React.createContext(MyContext);
-  const { state, dispatch } = React.useContext(AuthContext);
-  let url = state.url;
+  const { auth_state } = React.useContext(AuthContext);
+  let url = URL();
   const initialState = {
     post_caption: "",
     post_media: ""
@@ -31,7 +32,7 @@ const PostVideo = ({ route, navigation }) => {
   const [mystate, setState] = React.useState(initialState);
   const [loading, controlLoading] = React.useState(false);
 
-  const token = state.token;
+  const token = auth_state.token;
   const decoded = jwt_decode(token);
   const user_id = decoded;
   const video = React.useRef(null);
@@ -50,10 +51,10 @@ const PostVideo = ({ route, navigation }) => {
       type: `video/${fileType}`
     });
     data.append("post_caption", mystate.post_caption);
-    data.append("token", state.token);
+    data.append("token", auth_state.token);
     data.append("is_video", true);
     let myHeaders = new Headers();
-    myHeaders.append("x-access-token", state.token);
+    myHeaders.append("x-access-token", auth_state.token);
 
     fetch(`${url}/create_post`, {
       method: "POST",

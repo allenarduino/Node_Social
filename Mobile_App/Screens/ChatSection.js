@@ -11,7 +11,7 @@ import {
 import { List, ListItem, Header } from "react-native-elements";
 import { Avatar } from "react-native-elements/dist/avatar/Avatar";
 import { ScrollView, RectButton } from "react-native-gesture-handler";
-import { AuthContext } from "../App";
+import { AuthContext } from "../contexts/AuthContextProvider";
 import Icon from "react-native-vector-icons/Ionicons";
 
 const WIDTH = Dimensions.get("window").width;

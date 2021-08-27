@@ -7,19 +7,19 @@ import {
   TextInput
 } from "react-native";
 import BottomTab from "../Navigation/BottomNav";
+import URL from "./url";
 import AsyncStorage from "@react-native-community/async-storage";
 import SwitchNav from "../Navigation/SwitchNavOne";
-import { AuthContext } from "../App";
+import { AuthContext } from "../contexts/AuthContextProvider";
 import { AppStyles } from "../AppStyles";
 import * as Permissions from "expo-permissions";
 //import getPermission from "../utils/getPermission";
 import * as Notifications from "expo-notifications";
-import URL from "./url";
+
 //I'm using this for email validation
 const validEmailRegex = RegExp(
   /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
 );
-const url = URL();
 
 const LoginScreen = ({ navigation }) => {
   Notifications.setNotificationHandler({
@@ -40,10 +40,11 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const [state, setState] = React.useState(initialState);
-  const { dispatch } = React.useContext(AuthContext);
+  const { auth_state, auth_dispatch } = React.useContext(AuthContext);
   const [loading, controlLoading] = React.useState(false);
   const [expoPushToken, setExpoPushToken] = React.useState("");
   const [notification, setNotification] = React.useState(false);
+  let url = URL();
 
   async function registerForPushNotificationsAsync() {
     const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
@@ -108,7 +109,7 @@ const LoginScreen = ({ navigation }) => {
         .then(res => res.json())
         .then(data => {
           if (data.error == null) {
-            dispatch({
+            auth_dispatch({
               type: "LOGIN",
               payload: data
             });

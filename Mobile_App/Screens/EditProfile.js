@@ -10,7 +10,7 @@ import {
   Image
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { AuthContext } from "../App";
+import { AuthContext } from "../contexts/AuthContextProvider";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;

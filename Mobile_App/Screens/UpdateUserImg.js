@@ -13,7 +13,7 @@ import {
 import AsyncStorage from "@react-native-community/async-storage";
 import HeaderButtons from "react-navigation-header-buttons";
 import { Header } from "react-native-elements";
-import { AuthContext } from "../App";
+import { AuthContext } from "../contexts/AuthContextProvider";
 
 const io = require("socket.io-client");
 

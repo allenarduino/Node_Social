@@ -9,29 +9,29 @@ import {
 } from "react-native";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
+import { ThemeContext } from "../contexts/ThemeContextProvider";
 
-class AppIntroOne extends React.Component {
-  render() {
-    return (
-      <View style={styles.appContainer}>
-        <Text style={styles.headerText}>Teklife</Text>
-        <Image
-          source={require("../Images/edu_svg1.jpg")}
-          style={styles.introImage}
-        />
-        <Text style={styles.descriptionText}>Your community of students</Text>
-        <Text style={styles.descriptionText2}>Connect students in KNUST</Text>
+const AppIntroOne = ({ navigation }) => {
+  const { theme_state } = React.useContext(ThemeContext);
+  return (
+    <View style={styles.appContainer}>
+      <Text style={styles.headerText}>Teklife</Text>
+      <Image
+        source={require("../Images/edu_svg1.jpg")}
+        style={styles.introImage}
+      />
+      <Text style={styles.descriptionText}>Your community of students</Text>
+      <Text style={styles.descriptionText2}>Connect students in KNUST</Text>
 
-        <TouchableOpacity
-          style={styles.nextButton}
-          onPress={() => this.props.navigation.navigate("AppIntroTwo")}
-        >
-          <Text style={styles.buttonText}>NEXT</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
+      <TouchableOpacity
+        style={styles.nextButton}
+        onPress={() => navigation.navigate("AppIntroTwo")}
+      >
+        <Text style={styles.buttonText}>NEXT</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 export default AppIntroOne;
 

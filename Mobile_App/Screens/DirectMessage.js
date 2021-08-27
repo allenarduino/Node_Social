@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { NavigationContainer } from "@react-navigation/native";
-import { AuthContext } from "../App";
+import { AuthContext } from "../contexts/AuthContextProvider";
 //import { MessageContext } from "../Context/MessageContext";
 import jwt_decode from "jwt-decode";
 import { Header } from "react-native-elements";
