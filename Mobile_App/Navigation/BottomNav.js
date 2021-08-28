@@ -84,11 +84,17 @@ export default createAppContainer(BottomTab);
 */
 
 import React from "react";
-import { StyleSheet, Text, View, Dimensions, AsyncStorage } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  AsyncStorage,
+  TouchableOpacity
+} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Home from "../Screens/Home";
-import { FontAwesome } from "react-native-vector-icons";
-
+import { FontAwesomeIcon } from "react-native-vector-icons/FontAwesome5";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeStack from "./HomeStack";
@@ -100,12 +106,42 @@ import BuynSellStack from "./BuynSellStack";
 
 const Tab = createBottomTabNavigator();
 
+const CustomTabBarButton = () => {
+  return (
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        width: 40,
+        height: 40,
+        borderRadius: 35,
+        backgroundColor: "rgb(95, 32, 155)"
+      }}
+    >
+      <Icon name="add" color="#fff" size={26} />
+    </View>
+  );
+};
+
 function BottomTab() {
   return (
     <NavigationContainer>
       <Tab.Navigator
         tabBarOptions={{
-          activeTintColor: "rgb(95, 32, 155)"
+          showLabel: false,
+          style: {
+            bottom: 25,
+            paddingTop: 20,
+            paddingBottom: 20,
+            backgroundColor: "#fff",
+            alignItems: "center",
+            textAlign: "center",
+            left: 20,
+            right: 20,
+            width: "90%",
+            borderRadius: 100,
+            height: 55
+          }
         }}
         mode="modal"
       >
@@ -113,11 +149,29 @@ function BottomTab() {
           name="Home"
           component={HomeStack}
           options={{
-            tabBarLabel: "Home",
-            activeColor: "rgb(179, 7, 127)",
+            tabBarLabel: "",
             inactiveColor: "black",
-            tabBarIcon: ({ color }) => (
-              <Icon name="home-outline" color={color} size={26} />
+            tabBarIcon: ({ focused }) => (
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <Icon
+                  name="home-outline"
+                  size={26}
+                  color={focused ? " rgb(95, 32, 155)" : "black"}
+                />
+                <Text
+                  style={{
+                    color: `${focused ? "rgb(95, 32, 155)" : "black"}`,
+                    fontSize: 12
+                  }}
+                >
+                  Home
+                </Text>
+              </View>
             )
           }}
         />
@@ -129,8 +183,27 @@ function BottomTab() {
             tabBarLabel: "Users",
             activeColor: "rgb(179, 7, 127)",
             inactiveColor: "black",
-            tabBarIcon: ({ color }) => (
-              <Icon name="search-outline" color={color} size={26} />
+            tabBarIcon: ({ focused }) => (
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <Icon
+                  name="search-outline"
+                  size={26}
+                  color={focused ? " rgb(95, 32, 155)" : "black"}
+                />
+                <Text
+                  style={{
+                    color: `${focused ? "rgb(95, 32, 155)" : "black"}`,
+                    fontSize: 12
+                  }}
+                >
+                  Users
+                </Text>
+              </View>
             )
           }}
         />
@@ -139,12 +212,10 @@ function BottomTab() {
           name="AddStack"
           component={AddStack}
           options={{
-            tabBarLabel: "Add post",
+            tabBarLabel: "",
             activeColor: "rgb(179, 7, 127)",
             inactiveColor: "black",
-            tabBarIcon: ({ color }) => (
-              <Icon name="add-circle" color={color} size={40} />
-            )
+            tabBarIcon: ({ focused }) => <CustomTabBarButton />
           }}
         />
 
@@ -152,11 +223,30 @@ function BottomTab() {
           name="BuynSellStack"
           component={BuynSellStack}
           options={{
-            tabBarLabel: "Buy N Sell",
+            tabBarLabel: "",
             activeColor: "rgb(179, 7, 127)",
             inactiveColor: "black",
-            tabBarIcon: ({ color }) => (
-              <Icon name="cart-outline" color={color} size={26} />
+            tabBarIcon: ({ focused }) => (
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <Icon
+                  name="cart-outline"
+                  size={26}
+                  color={focused ? " rgb(95, 32, 155)" : "black"}
+                />
+                <Text
+                  style={{
+                    color: `${focused ? "rgb(95, 32, 155)" : "black"}`,
+                    fontSize: 12
+                  }}
+                >
+                  Buy N Sell
+                </Text>
+              </View>
             )
           }}
         />
@@ -169,8 +259,27 @@ function BottomTab() {
             activeColor: "rgb(179, 7, 127)",
             inactiveColor: "black",
 
-            tabBarIcon: ({ color }) => (
-              <Icon name="person-outline" color={color} size={26} />
+            tabBarIcon: ({ focused }) => (
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <Icon
+                  name="person-outline"
+                  size={26}
+                  color={focused ? " rgb(95, 32, 155)" : "black"}
+                />
+                <Text
+                  style={{
+                    color: `${focused ? "rgb(95, 32, 155)" : "black"}`,
+                    fontSize: 12
+                  }}
+                >
+                  Profile
+                </Text>
+              </View>
             )
           }}
         />
