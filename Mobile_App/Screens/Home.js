@@ -9,6 +9,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { useIsFocused } from "@react-navigation/native";
 import jwt_decode from "jwt-decode";
 import { ScrollView, View, Text, TouchableOpacity, Image } from "react-native";
+import PostSkeletonLoader from "../Components/PostSkeletonLoader";
 
 const Home = ({ navigation }) => {
   const { auth_state } = React.useContext(AuthContext);
@@ -89,9 +90,13 @@ const Home = ({ navigation }) => {
       />
       <ScrollView>
         <View style={{ paddingBottom: 30 }}>
-          {post_state.posts.map(post => (
-            <PostCard post={post} navigation={navigation} />
-          ))}
+          {post_state.posts.length == 0 ? (
+            <PostSkeletonLoader />
+          ) : (
+            post_state.posts.map(post => (
+              <PostCard post={post} navigation={navigation} />
+            ))
+          )}
         </View>
       </ScrollView>
     </>

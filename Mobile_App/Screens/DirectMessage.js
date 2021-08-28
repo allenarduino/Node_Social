@@ -18,6 +18,7 @@ import { AuthContext } from "../contexts/AuthContextProvider";
 //import { MessageContext } from "../Context/MessageContext";
 import jwt_decode from "jwt-decode";
 import { Header } from "react-native-elements";
+import URL from "./url";
 import uuid from "uuid";
 
 const io = require("socket.io-client");
@@ -32,8 +33,8 @@ const socket = io("http://10.74.15.133:3000", {
 });
 
 const DirectMessage = ({ route, navigation }) => {
-  const { state, dispatch } = React.useContext(AuthContext);
-  let url = state.url;
+  const { auth_state } = React.useContext(AuthContext);
+  let url = URL();
   //const { messagesState, setMessages } = React.useContext(MessageContext);
   const scroll = React.useRef();
   const myinput = React.useRef();
@@ -64,7 +65,7 @@ const DirectMessage = ({ route, navigation }) => {
     initialState
   );
 
-  const token = state.token;
+  const token = auth_state.token;
   const decoded = jwt_decode(token);
   const user_id = decoded;
 
@@ -72,11 +73,6 @@ const DirectMessage = ({ route, navigation }) => {
   const [messages, updateMessages] = React.useState([]);
   const [sent, updateSent] = React.useState(false);
   const [max, setMax] = React.useState("");
-
-  let data_sent = JSON.stringify({
-    user_id: route.params.user_id,
-    token: state.token
-  });
 
   const sendMessage = async () => {
     const sender_id = user_id;
@@ -91,7 +87,7 @@ const DirectMessage = ({ route, navigation }) => {
     if (message.trim().length === 0) {
       return;
     } else {
-      myinput.current.clear();
+      setMessage("");
       updateMessages([...messages, offline_data]);
       const formdata = new FormData();
       formdata.append("message", message);
@@ -99,7 +95,7 @@ const DirectMessage = ({ route, navigation }) => {
       fetch(`${url}/send_message.php`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${state.token}`
+          Authorization: `Bearer ${auth_state.token}`
         },
         body: formdata
       })
@@ -107,15 +103,15 @@ const DirectMessage = ({ route, navigation }) => {
         .then(data => {
           updateSent(true);
         })
-        .catch(err => alert("No Internet"));
+        .catch(err => console.log(err));
     }
   };
 
   const fetch_messages = () => {
-    fetch(`${url}/code_reservoir/fetch_messages.php/?data=${data_sent}`, {
+    fetch(`${url}/code_reservoir/fetch_messages.php/`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${state.token}`
+        Authorization: `Bearer ${auth_state.token}`
       }
     })
       .then(res => res.json())
@@ -202,7 +198,7 @@ const DirectMessage = ({ route, navigation }) => {
               keyboardAppearance="dark"
               keyboardType="default"
               onChangeText={message => setMessage(message)}
-              value={state.password}
+              value={message}
               ref={myinput}
             />
             <Icon name="image" size={25} color="rgb(95, 32, 155)" />
