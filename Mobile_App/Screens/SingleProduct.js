@@ -12,20 +12,22 @@ import {
   Linking
 } from "react-native";
 import { Header } from "react-native-elements";
+import URL from "./url";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import jwt_decode from "jwt-decode";
 import { Video, AVPlaybackStatus } from "expo-av";
 import Autolink from "react-native-autolink";
 
 //import { FontAwesome5 } from "@expo/vector-icons";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/Ionicons";
+import FontIcon from "react-native-vector-icons/FontAwesome5";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 const SingleProduct = ({ navigation, route }) => {
-  const { state, dispatch } = React.useContext(AuthContext);
-  let url = state.url;
+  const { auth_state } = React.useContext(AuthContext);
+  let url = URL();
   const {
     product_img,
     name,
@@ -37,6 +39,33 @@ const SingleProduct = ({ navigation, route }) => {
   } = route.params;
   return (
     <View style={{ backgroundColor: "#fff", flex: 1 }}>
+      <Header
+        placement="left"
+        leftComponent={
+          <Text onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={27} />
+          </Text>
+        }
+        centerComponent={
+          <Text
+            onPress={() => navigation.goBack()}
+            s
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              color: "black",
+              marginLeft: -5
+            }}
+          >
+            {name}
+          </Text>
+        }
+        containerStyle={{
+          backgroundColor: "#fff",
+          //justifyContent: 'space-around',
+          height: "13%"
+        }}
+      />
       <ScrollView>
         <Image
           source={{ uri: `${url}/${product_img}` }}
@@ -59,7 +88,7 @@ const SingleProduct = ({ navigation, route }) => {
           style={styles.contactSeller}
           onPress={() => Linking.openURL(`tel:${phone_number}`)}
         >
-          <Icon name="phone" color="#fff" size={20} />
+          <FontIcon name="phone" color="#fff" size={20} />
           <Text style={styles.contactSellerText}>Contact Seller</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -69,8 +98,7 @@ const SingleProduct = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   coverPhoto: {
     height: HEIGHT / 2.5,
-    width: "100%",
-    marginTop: 30
+    width: "100%"
   },
   name: {
     fontSize: 17

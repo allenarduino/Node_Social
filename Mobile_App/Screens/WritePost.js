@@ -1,4 +1,5 @@
 import Icon from "react-native-vector-icons/Ionicons";
+import styled from "styled-components";
 import React from "react";
 import {
   Image,
@@ -11,72 +12,57 @@ import {
   TouchableOpacity
 } from "react-native";
 import URL from "./url";
-import AsyncStorage from "@react-native-community/async-storage";
 import HeaderButtons from "react-navigation-header-buttons";
 import { Header } from "react-native-elements";
 import { AuthContext } from "../contexts/AuthContextProvider";
-
-const io = require("socket.io-client");
-
-const socket = io("http://10.74.14.80:5000", {
-  transports: ["websocket"]
-});
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 import jwt_decode from "jwt-decode";
+const io = require("socket.io-client");
 
-const UpdateUserImg = ({ route, navigation }) => {
-  const MyContext = React.createContext(MyContext);
-  const { auth_state, auth_dispatch } = React.useContext(AuthContext);
+const socket = io("http://10.74.12.37:4000", {
+  transports: ["websocket"]
+});
+
+const WritePost = ({ navigation }) => {
+  const { auth_state } = React.useContext(AuthContext);
   let url = URL();
-  const initialState = {
-    user_img: ""
-  };
-  const [mystate, setState] = React.useState(initialState);
+
+  const [post_caption, setPostCaption] = React.useState("");
   const [loading, controlLoading] = React.useState(false);
 
   const token = auth_state.token;
   const decoded = jwt_decode(token);
   const user_id = decoded;
 
-  const update_user_img = () => {
-    controlLoading(true);
-
-    let uri = route.params.image;
-    let uriParts = route.params.image.split(".");
-    let filename = uri.split("/").pop();
-    let fileType = uriParts[uriParts.length - 1];
-    const data = new FormData();
-    data.append("user_img", {
-      uri,
-      name: `${filename}`,
-      type: `image/${fileType}`
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("x-access-token", auth_state.token);
-    fetch(`${url}/update_user_img`, {
-      method: "POST",
-      body: data,
-      headers: myHeaders
-    })
-      .then(res => res.json())
-      .then(data => {
-        controlLoading(false);
-        navigation.navigate("Profile");
-        // alert("Profile Photo Updating....");
+  const make_post = () => {
+    if (post_caption == "") {
+      alert("Please never leave the form empty");
+    } else {
+      controlLoading(true);
+      let myHeaders = new Headers();
+      myHeaders.append("x-access-token", auth_state.token);
+      myHeaders.append("Content-Type", "application/json");
+      const data = { post_caption: post_caption };
+      fetch(`${url}/write_post`, {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(data)
       })
-      .catch(err => {
-        controlLoading(false);
-        alert(err);
-      });
+        .then(res => res.json())
+        .then(data => {
+          controlLoading(false);
+          navigation.navigate("Home");
+        })
+        .catch(err => {
+          console.log(err);
+          controlLoading(false);
+        });
+    }
   };
 
-  //state = { text: '' };
-
-  const { image } = route.params;
   return (
     <View>
       {loading ? (
@@ -98,7 +84,7 @@ const UpdateUserImg = ({ route, navigation }) => {
           />
         }
         rightComponent={
-          <TouchableOpacity onPress={() => update_user_img()}>
+          <TouchableOpacity onPress={() => make_post()}>
             <Icon name="checkmark-circle-outline" size={35} color="black" />
           </TouchableOpacity>
         }
@@ -110,47 +96,34 @@ const UpdateUserImg = ({ route, navigation }) => {
       />
       <ScrollView>
         <View>
-          <Image
-            source={{ uri: `${route.params.image}` }}
-            style={styles.myImage}
-          />
-          <Text
-            style={{
-              alignSelf: "center",
-              fontWeight: "bold",
-              fontSize: 20,
-              marginTop: 20
-            }}
-          >
-            Profile Picture
-          </Text>
+          <View>
+            <TextInput
+              multiline
+              placeholder="Share your thoughts and experiences with people..."
+              style={styles.input}
+              value={post_caption}
+              onChangeText={post_caption => setPostCaption(post_caption)}
+            />
+          </View>
           <View style={styles.postContainer}></View>
         </View>
       </ScrollView>
     </View>
   );
 };
-
-export default UpdateUserImg;
+export default WritePost;
 
 const styles = StyleSheet.create({
-  myImage: {
-    width: 220,
-    height: 220,
-    borderRadius: 220,
-    marginTop: -50,
-    borderWidth: 3,
-    borderColor: "#fff",
-    marginTop: 100,
-    alignSelf: "center"
-  },
   input: {
-    marginTop: 100,
-    paddingTop: 20,
+    alignSelf: "center",
     fontSize: 20,
-    paddingLeft: 10
+    height: 200,
+    paddingLeft: 10,
+    width: "90%",
+    marginTop: 20,
+    borderColor: "black",
+    borderWidth: 1
   },
-
   myHeader: {
     width: "100%",
     paddingTop: 40,

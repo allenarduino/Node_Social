@@ -75,9 +75,7 @@ const AddSection = ({ navigation }) => {
         <TouchableOpacity onPress={() => _selectPhoto()}>
           <View style={{ display: "flex", flexDirection: "row" }}>
             <Icon name="image-outline" size={24} />
-            <Text style={{ marginTop: 2, marginLeft: 10 }}>
-              Select Photo/GIF
-            </Text>
+            <Text style={{ marginTop: 2, marginLeft: 10 }}>Select Photo</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => _takePhoto()}>
@@ -93,7 +91,15 @@ const AddSection = ({ navigation }) => {
             style={{ display: "flex", flexDirection: "row", marginTop: 20 }}
           >
             <Icon name="videocam-outline" size={24} />
-            <Text style={{ marginTop: 2, marginLeft: 10 }}>Add Video</Text>
+            <Text style={{ marginTop: 2, marginLeft: 10 }}>Add Video/GIF</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("WritePost")}>
+          <View
+            style={{ display: "flex", flexDirection: "row", marginTop: 20 }}
+          >
+            <Icon name="pencil-outline" size={24} />
+            <Text style={{ marginTop: 2, marginLeft: 10 }}>Write Post</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -104,7 +110,7 @@ const AddSection = ({ navigation }) => {
 const styles = StyleSheet.create({
   bottomModal: {
     backgroundColor: "#fff",
-    height: 250,
+    height: 280,
     width: "100%",
     alignSelf: "center",
     marginTop: HEIGHT / 3,

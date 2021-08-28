@@ -15,11 +15,13 @@ import { Header } from "react-native-elements";
 import Icon from "react-native-vector-icons/Ionicons";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { ProfileContext } from "../contexts/ProfileContextProvider";
+import PostCard from "../Components/PostCard/PostCard";
 import jwt_decode from "jwt-decode";
 import Autolink from "react-native-autolink";
 import { useIsFocused } from "@react-navigation/native";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
+
 const Profile = ({ navigation, route }) => {
   const { auth_state, dispatch } = React.useContext(AuthContext);
   const { profile_state, profile_dispatch } = React.useContext(ProfileContext);
@@ -30,6 +32,12 @@ const Profile = ({ navigation, route }) => {
   const user_id = decoded;
 
   const scrollRef = React.useRef();
+  const scroll_to_Top = () => {
+    scrollRef.current.scrollTo({
+      y: 0,
+      animated: true
+    });
+  };
 
   const [iconsConfigure] = React.useState({
     color: "#333",
@@ -81,13 +89,6 @@ const Profile = ({ navigation, route }) => {
       .catch(err => console.log(err));
   };
 
-  const scroll_to_Top = () => {
-    scrollRef.current.scrollTo({
-      y: 0,
-      animated: true
-    });
-  };
-
   const fetch_user = () => {
     let myHeaders = new Headers();
     myHeaders.append("x-access-token", auth_state.token);
@@ -102,6 +103,7 @@ const Profile = ({ navigation, route }) => {
           type: "FETCH_USER_POSTS",
           payload: data.user_posts
         });
+        controlLoading(false);
       })
       .catch(err => console.log(err));
   };
@@ -112,43 +114,45 @@ const Profile = ({ navigation, route }) => {
     }
   }, [navigation, isFocused]);
 
+  //Getting user name from profile context
+  const full_name = profile_state.profile.map(profile => {
+    return profile.full_name;
+  });
+
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      {profile_state.profile.map(user => (
-        <Header
-          placement="left"
-          centerComponent={
-            <Text
-              onPress={() => navigation.goBack()}
-              s
-              style={{
-                fontSize: 20,
-                fontWeight: "bold",
-                color: "black",
-                marginLeft: -5
-              }}
-            >
-              {user.full_name}
-            </Text>
-          }
-          rightComponent={
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("EditProfile", {
-                  user_id: user_id
-                })
-              }
-            >
-              <Icon name="pencil" size={25} color="rgb(95, 32, 155)" />
-            </TouchableOpacity>
-          }
-          containerStyle={{
-            backgroundColor: "#fff",
-            //justifyContent: 'space-around',
-            height: "13%"
-          }}
-        />
-      ))}
+    <View style={{ flex: 1, backgroundColor: "#fff", paddingBottom: 30 }}>
+      <Header
+        placement="left"
+        leftComponent={
+          <Text onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={27} />
+          </Text>
+        }
+        centerComponent={
+          <Text
+            onPress={() => navigation.goBack()}
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              color: "black",
+              marginLeft: -5
+            }}
+          >
+            {full_name}
+          </Text>
+        }
+        rightComponent={
+          <TouchableOpacity>
+            <Icon name="settings" size={25} color="black" />
+          </TouchableOpacity>
+        }
+        containerStyle={{
+          backgroundColor: "#fff",
+          //justifyContent: 'space-around',
+          height: "13%"
+        }}
+      />
+
       {loading ? (
         <View
           style={{
@@ -164,7 +168,7 @@ const Profile = ({ navigation, route }) => {
         </View>
       ) : (
         <ScrollView ref={scrollRef}>
-          {myprofile.map(p => (
+          {profile_state.profile.map(p => (
             <View>
               <Image
                 source={{ uri: `${url}/${p.coverphoto}` }}
@@ -193,6 +197,13 @@ const Profile = ({ navigation, route }) => {
                 </TouchableOpacity>
               </View>
             </View>
+          ))}
+          {profile_state.user_posts.map(post => (
+            <PostCard
+              post={post}
+              scroll_to_Top={scroll_to_Top}
+              navigation={navigation}
+            />
           ))}
         </ScrollView>
       )}

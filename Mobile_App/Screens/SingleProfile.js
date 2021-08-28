@@ -10,41 +10,34 @@ import {
   Modal,
   TouchableWithoutFeedback
 } from "react-native";
+import URL from "./url";
 import { Header } from "react-native-elements";
-import { AuthContext } from "../contexts/AuthContextProvider";
-import jwt_decode from "jwt-decode";
-import { Video, AVPlaybackStatus } from "expo-av";
-import Autolink from "react-native-autolink";
-
-import {
-  ContainerScroll,
-  Container,
-  ContainerHeader,
-  ContainerItemStory,
-  ContainerPhoto,
-  Photo,
-  Name,
-  PostPhoto,
-  ContainerActions,
-  ContainerActionsIcons,
-  GroupIcons,
-  Label
-} from "../Components/Posts/styles";
-import { FontAwesome5 } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Ionicons";
+import { AuthContext } from "../contexts/AuthContextProvider";
+import { ProfileContext } from "../contexts/ProfileContextProvider";
+import PostCard from "../Components/PostCard/PostCard";
+import jwt_decode from "jwt-decode";
+import Autolink from "react-native-autolink";
 import { useIsFocused } from "@react-navigation/native";
-
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
-const SingleProfile = ({ route, navigation }) => {
-  const { state, dispatch } = React.useContext(AuthContext);
+const SingleProfile = ({ navigation, route }) => {
+  const { auth_state, dispatch } = React.useContext(AuthContext);
+  const { profile_state, profile_dispatch } = React.useContext(ProfileContext);
+  let url = URL();
   const isFocused = useIsFocused();
-
-  let url = state.url;
-  const token = state.token;
+  const token = auth_state.token;
   const decoded = jwt_decode(token);
   const user_id = decoded;
+
+  const scrollRef = React.useRef();
+  const scroll_to_Top = () => {
+    scrollRef.current.scrollTo({
+      y: 0,
+      animated: true
+    });
+  };
 
   const [iconsConfigure] = React.useState({
     color: "#333",
@@ -54,24 +47,16 @@ const SingleProfile = ({ route, navigation }) => {
     }
   });
 
-  const initialState = {
-    myprofile: [],
-    myposts: []
-  };
-
-  //const [profile_data,setState]=React.useState(initialState);
+  const [loading, controlLoading] = React.useState(true);
+  const [max, setMax] = React.useState(0);
 
   const [myposts, fetchPosts] = React.useState([]);
   const [myprofile, fetchProfile] = React.useState([]);
-  const [loading, controlLoading] = React.useState(true);
-  const [max, setMax] = React.useState("");
   const [modalVisible, setModalVisible] = React.useState(false);
   const [bottomModalVisible, setBottomModalVisible] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState(null);
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
-  const [posts, setState] = React.useState([]);
-  const scrollRef = React.useRef();
 
   const openModal = id => {
     setModalVisible(true);
@@ -104,129 +89,70 @@ const SingleProfile = ({ route, navigation }) => {
       .catch(err => console.log(err));
   };
 
-  let data_sent = JSON.stringify({
-    user_id: route.params.user_id
-  });
-
-  const scroll_to_Top = () => {
-    scrollRef.current.scrollTo({
-      y: 0,
-      animated: true
-    });
-  };
-
   const fetch_user = () => {
     let myHeaders = new Headers();
-    myHeaders.append("x-access-token", state.token);
+    myHeaders.append("x-access-token", auth_state.token);
     fetch(`${url}/user_profile/${route.params.user_id}`, {
       method: "GET",
       headers: myHeaders
     })
       .then(res => res.json())
       .then(data => {
-        fetchProfile(data.user_profile);
-        fetchPosts(data.user_posts);
+        profile_dispatch({ type: "FETCH_PROFILE", payload: data.user_profile });
+        profile_dispatch({
+          type: "FETCH_USER_POSTS",
+          payload: data.user_posts
+        });
         controlLoading(false);
       })
       .catch(err => console.log(err));
-    setTimeout(fetch_user, 50000);
   };
 
   React.useEffect(() => {
     if (isFocused) {
       fetch_user();
     }
-  }, [{ route, navigation }, isFocused]);
+  }, [navigation, isFocused]);
 
-  const like = async id => {
-    const newPost = myposts.map(p =>
-      p.p_id === id
-        ? { ...p, post_liker: user_id, total_likes: p.total_likes + 1 }
-        : p
-    );
-
-    //  dispatch({ type: "FETCH_USER_POSTS", payload: newPost });
-    fetchPosts(newPost);
-
-    const data = new FormData();
-    data.append("post_id", id);
-    data.append("token", state.token);
-
-    fetch(`${url}/like_post.php`, {
-      method: "POST",
-      body: data
-      //headers: {
-      //  'Content-Type': 'multipart/form-data'
-      //}
-    })
-      .then(res => res.json())
-      .then(data => console.log(data.message));
-    //.catch(err=>alert(err))
-  };
-
-  const unlike = async (e, id) => {
-    const newPost = myposts.map(p =>
-      p.p_id === id
-        ? { ...p, post_liker: null, total_likes: p.total_likes - 1 }
-        : p
-    );
-
-    fetchPosts(newPost);
-    const data = new FormData();
-    data.append("post_id", id);
-    data.append("token", state.token);
-
-    fetch(`${url}/unlike_post.php`, {
-      method: "POST",
-      body: data
-      //headers: {
-      //  'Content-Type': 'multipart/form-data'
-      //}
-    }).then(res => res.json());
-    // .then(data=>alert(data.message))
-    // .catch(err=>console.log(err))
-  };
+  //Getting user name from profile context
+  const full_name = profile_state.profile.map(profile => {
+    return profile.full_name;
+  });
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      {myprofile.map(user => (
-        <Header
-          placement="left"
-          leftComponent={
-            <Text onPress={() => navigation.goBack()}>
-              <Icon name="arrow-back" size={27} />
-            </Text>
-          }
-          centerComponent={
-            <Text
-              onPress={() => navigation.goBack()}
-              s
-              style={{
-                fontSize: 20,
-                fontWeight: "bold",
-                color: "black",
-                marginLeft: -5
-              }}
-            >
-              {user.full_name}
-            </Text>
-          }
-          rightComponent={
-            user_id == route.params.user_id ? (
-              <TouchableOpacity
-                onPress={() => navigation.navigate("EditProfile")}
-              >
-                <Icon name="pencil" size={25} color="rgb(95, 32, 155)" />
-              </TouchableOpacity>
-            ) : null
-          }
-          containerStyle={{
-            backgroundColor: "#fff",
-            //justifyContent: 'space-around',
-            height: "13%"
-          }}
-        />
-      ))}
+    <View style={{ flex: 1, backgroundColor: "#fff", paddingBottom: 30 }}>
+      <Header
+        placement="left"
+        leftComponent={
+          <Text onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={27} />
+          </Text>
+        }
+        centerComponent={
+          <Text
+            onPress={() => navigation.goBack()}
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              color: "black",
+              marginLeft: -5
+            }}
+          >
+            {full_name}
+          </Text>
+        }
+        rightComponent={
+          <TouchableOpacity>
+            <Icon name="settings" size={25} color="black" />
+          </TouchableOpacity>
+        }
+        containerStyle={{
+          backgroundColor: "#fff",
+          //justifyContent: 'space-around',
+          height: "13%"
+        }}
+      />
+
       {loading ? (
         <View
           style={{
@@ -242,176 +168,63 @@ const SingleProfile = ({ route, navigation }) => {
         </View>
       ) : (
         <ScrollView ref={scrollRef}>
-          <ContainerScroll>
-            {myprofile.map(p => (
-              <View>
-                <Image
-                  source={{ uri: `${url}/${p.coverphoto}` }}
-                  style={styles.coverPhoto}
-                />
-                <View style={{ alignItems: "center" }}>
-                  <Image
-                    source={{ uri: `${url}/${p.user_img}` }}
-                    style={styles.avartar}
-                  />
-                  <Text style={styles.name}>{p.full_name}</Text>
-                  <Text style={styles.bio}>{p.bio}</Text>
-                  {user_id == p.user_id ? (
-                    <TouchableOpacity
-                      style={styles.editProfile}
-                      onPress={() =>
-                        navigation.navigate("EditProfile", {
-                          user_id: p.user_id,
-                          full_name: p.full_name,
-                          bio: p.bio,
-                          coverphoto: p.coverphoto,
-                          user_img: p.user_img
-                        })
-                      }
-                    >
-                      <Text style={styles.editProfileText}>Edit Profile</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      style={styles.messageUser}
-                      onPress={() =>
-                        navigation.navigate("DirectMessage", {
-                          user_id: p.user_id,
-                          full_name: p.full_name,
-                          user_img: p.user_img
-                        })
-                      }
-                    >
-                      <Text style={styles.messageUserText}>Message</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-            ))}
-
-            <View style={{ marginTop: 100 }}>
-              {myposts.map((post, index) => (
-                <Container key={index}>
-                  <ContainerHeader>
-                    <TouchableOpacity onPress={() => scroll_to_Top()}>
-                      <ContainerItemStory>
-                        <ContainerPhoto>
-                          <Photo
-                            source={{
-                              uri: `${url}/${post.user_img}`
-                            }}
-                          />
-                        </ContainerPhoto>
-                        <Name>{post.full_name}</Name>
-                      </ContainerItemStory>
-                    </TouchableOpacity>
-                    {post.owner_id == user_id ? (
-                      <TouchableOpacity onPress={() => openModal(post.p_id)}>
-                        <FontAwesome5
-                          name="ellipsis-h"
-                          size={18}
-                          color="#888"
-                        />
-                      </TouchableOpacity>
-                    ) : null}
-                  </ContainerHeader>
-                  {post.is_video === "true" ? (
-                    <Video
-                      ref={video}
-                      source={{
-                        uri: `${url}/${post.post_media}`
-                      }}
-                      style={styles.myVideo}
-                      useNativeControls={true}
-                      resizeMode="cover"
-                      //shouldPlay
-                      onPlaybackStatusUpdate={status => setStatus(() => status)}
-                    />
-                  ) : (
-                    <PostPhoto
-                      source={{
-                        uri: `${url}/${post.post_media}`
-                      }}
-                    />
-                  )}
-                  <ContainerActions>
-                    <ContainerActionsIcons>
-                      <GroupIcons>
-                        {post.post_liker === null ? (
-                          <TouchableOpacity onPress={e => like(post.p_id)}>
-                            <Icon
-                              name="heart-outline"
-                              size={25}
-                              color="black"
-                            />
-                          </TouchableOpacity>
-                        ) : (
-                          <TouchableOpacity onPress={e => unlike(e, post.p_id)}>
-                            <Icon name="heart" color="red" size={25} />
-                          </TouchableOpacity>
-                        )}
-                        <TouchableOpacity
-                          style={{ marginLeft: 10, marginTop: 2 }}
-                          onPress={() =>
-                            navigation.navigate("SinglePost", {
-                              post_id: post.p_id
-                            })
-                          }
-                        >
-                          <FontAwesome5 name="comment" {...iconsConfigure} />
-                        </TouchableOpacity>
-                      </GroupIcons>
-                      <FontAwesome5 name="bookmark" {...iconsConfigure} />
-                    </ContainerActionsIcons>
-                    <Label style={{ marginTop: -20 }}>
-                      {post.total_likes} Likes
-                    </Label>
-                    <Label>
-                      <Autolink text={post.post_caption} />
-                    </Label>
-                    {post.total_comments > 0 ? (
-                      <TouchableOpacity>
-                        <Text
-                          onPress={() =>
-                            navigation.navigate("SinglePost", {
-                              post_id: post.p_id
-                            })
-                          }
-                          style={{ color: "grey" }}
-                        >
-                          {post.total_comments} comments
-                        </Text>
-                      </TouchableOpacity>
-                    ) : null}
-                  </ContainerActions>
-                </Container>
-              ))}
-            </View>
-          </ContainerScroll>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-          >
-            <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-              <View style={styles.modalOverlay}></View>
-            </TouchableWithoutFeedback>
-            <View style={styles.modalContent}>
-              <Icon
-                name="trash"
-                size={30}
-                onPress={() => delete_post(selectedId)}
+          {profile_state.profile.map(p => (
+            <View>
+              <Image
+                source={{ uri: `${url}/${p.coverphoto}` }}
+                style={styles.coverPhoto}
               />
-              <Text style={{ fontWeight: "bold" }}>Delete Post</Text>
+              <View style={{ alignItems: "center" }}>
+                <Image
+                  source={{ uri: `${url}/${p.user_img}` }}
+                  style={styles.avartar}
+                />
+                <Text style={styles.name}>{p.full_name}</Text>
+                <Text style={styles.bio}>{p.bio}</Text>
+                {user_id == p.user_id ? (
+                  <TouchableOpacity
+                    style={styles.editProfile}
+                    onPress={() =>
+                      navigation.navigate("EditProfile", {
+                        user_id: p.user_id,
+                        full_name: p.full_name,
+                        bio: p.bio,
+                        coverphoto: p.coverphoto,
+                        user_img: p.user_img
+                      })
+                    }
+                  >
+                    <Text style={styles.editProfileText}>Edit Profile</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={styles.messageUser}
+                    onPress={() =>
+                      navigation.navigate("DirectMessage", {
+                        user_id: p.user_id,
+                        full_name: p.full_name,
+                        user_img: p.user_img
+                      })
+                    }
+                  >
+                    <Text style={styles.messageUserText}>Message</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
-          </Modal>
+          ))}
+          {profile_state.user_posts.map(post => (
+            <PostCard
+              post={post}
+              scroll_to_Top={scroll_to_Top}
+              navigation={navigation}
+            />
+          ))}
         </ScrollView>
       )}
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   coverPhoto: {
     height: HEIGHT / 2,

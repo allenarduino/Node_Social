@@ -5,9 +5,10 @@ export const PostCardDesign = styled.View`
   flex-direction: row;
   justify-content: flex-start;
   padding: 10px 10px 0;
-  margin-top: 30px;
+  margin-top: 20px;
   align-self: center;
-  border: 1px solid #3333;
+  border-bottom-width: 1px;
+  border-bottom-color: #3333;
 `;
 
 export const UserImage = styled.Image`
@@ -47,7 +48,6 @@ export const Delete = styled.View`
 `;
 
 export const Line2 = styled.View`
-  font-size: 15px;
   margin-bottom: 10px;
   margin-left: 57px;
   margin-top: -20px;
