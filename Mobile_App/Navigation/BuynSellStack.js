@@ -6,7 +6,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import BuynSellTab from "./BuynSellBottom";
 import SingleProduct from "../Screens/SingleProduct";
 import Products from "../Screens/Products";
-import CreateProduct from "./CreateProduct";
+import CreateProduct from "../Screens/CreateProduct";
 import MyProducts from "../Screens/MyProducts";
 
 const Stack = createStackNavigator();

@@ -13,7 +13,7 @@ import {
 import HeaderButtons from "react-navigation-header-buttons";
 import { Header } from "react-native-elements";
 import { Video, AVPlaybackStatus } from "expo-av";
-import { AuthContext } from "../App";
+import { AuthContext } from "../contexts/AuthContextProvider";
 import { Constants } from "expo";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
@@ -24,11 +24,11 @@ import { BottomSheet } from "react-native-btr";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
-import jwt_decode from "jwt-decode";
-import { number } from "prop-types";
+//import jwt_decode from "jwt-decode";
+//import { number } from "prop-types";
 
 const CreateProduct = ({ navigation }) => {
-  const { state, dispatch } = React.useContext(AuthContext);
+  const { auth_state } = React.useContext(AuthContext);
   const [image, setImage] = React.useState(null);
   const [imageVisible, setImageVisible] = React.useState(false);
   const [name, setName] = React.useState("");
@@ -99,7 +99,7 @@ const CreateProduct = ({ navigation }) => {
       });
       controlLoading(true);
       let myHeaders = new Headers();
-      myHeaders.append("x-access-token", state.token);
+      myHeaders.append("x-access-token", auth_state.token);
       fetch(`${url}/create_product`, {
         method: "POST",
         body: data,

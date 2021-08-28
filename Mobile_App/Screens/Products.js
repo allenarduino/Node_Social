@@ -36,7 +36,7 @@ const Products = ({ navigation }) => {
   const [search, setSearch] = React.useState("");
   const [selectedId, setSelectedId] = React.useState(null);
   const { state, dispatch } = React.useContext(AuthContext);
-  let url =URL();
+  let url = URL();
   const isFocused = useIsFocused();
 
   const toggleBottomSheet = () => {
