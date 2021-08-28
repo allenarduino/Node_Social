@@ -12,7 +12,7 @@ import {
   TouchableWithoutFeedback
 } from "react-native";
 import { Header } from "react-native-elements";
-import { AuthContext } from "../contexts/AuthContextProvider";
+import { AuthContext } from "..";
 import jwt_decode from "jwt-decode";
 import { Video, AVPlaybackStatus } from "expo-av";
 import Autolink from "react-native-autolink";
@@ -21,7 +21,6 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Row, Col } from "react-native-responsive-grid-system";
 import { useIsFocused } from "@react-navigation/native";
-import URL from "./url";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -33,8 +32,8 @@ const MyProducts = ({ navigation }) => {
   const [bottomModalVisible, setBottomModalVisible] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const [selectedId, setSelectedId] = React.useState(null);
-  const { auth_state, auth_dispatch } = React.useContext(AuthContext);
-  let url = URL();
+  const { state, dispatch } = React.useContext(AuthContext);
+  let url = state.url;
   const isFocused = useIsFocused();
 
   const toggleBottomSheet = () => {
@@ -75,7 +74,7 @@ const MyProducts = ({ navigation }) => {
   const fetch_products = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("x-access-token", auth_state.token);
+    myHeaders.append("x-access-token", state.token);
     fetch(`${url}/my_products`, {
       method: "GET",
       headers: myHeaders

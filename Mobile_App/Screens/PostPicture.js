@@ -58,7 +58,7 @@ const PostPicture = ({ route, navigation }) => {
     data.append("is_video", false);
     let myHeaders = new Headers();
     myHeaders.append("x-access-token", auth_state.token);
-    fetch(`${url}/create_post`, {
+    fetch(`http://10.74.12.37:4000/create_post`, {
       method: "POST",
       body: data,
       headers: myHeaders

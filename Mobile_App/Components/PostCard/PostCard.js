@@ -2,9 +2,8 @@ import React from "react";
 import * as Expo from "expo";
 import Icon from "react-native-vector-icons/Ionicons";
 import jwt_decode from "jwt-decode";
-import Autolink from "react-native-autolink";
+import Linkify from "react-linkify";
 import { Video, AVPlaybackStatus } from "expo-av";
-import { useNavigationState } from "@react-navigation/native";
 import URL from "../../Screens/url";
 import {
   MaterialCommunityIcons,
@@ -24,8 +23,7 @@ import {
   Platform,
   Dimensions,
   Image,
-  Animated,
-  TouchableOpacity
+  Animated
 } from "react-native";
 import {
   PostCardDesign,
@@ -45,7 +43,7 @@ import {
   CommentBackground
 } from "./styles";
 
-const PostCard = ({ post, navigation, scroll_to_Top }) => {
+const PostCard = ({ post }) => {
   let url = URL();
   const [pulse, setPulse] = React.useState({});
   const { theme_state } = React.useContext(ThemeContext);
@@ -55,10 +53,6 @@ const PostCard = ({ post, navigation, scroll_to_Top }) => {
 
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
-
-  const screenName = useNavigationState(
-    state => state.routes[state.index].name
-  );
 
   //For toggling heart animation
 
@@ -155,38 +149,20 @@ const PostCard = ({ post, navigation, scroll_to_Top }) => {
       <PostCardContent>
         <Line1>
           <LineBox>
-            <TouchableOpacity
-              onPress={() => {
-                screenName == "Home"
-                  ? navigation.navigate("SingleProfile", {
-                      user_id: post.owner_id
-                    })
-                  : scroll_to_Top();
-              }}
-            >
-              <UserImage source={{ uri: `${url}/${post.user_img}` }} />
-            </TouchableOpacity>
-            <UserName
-              onPress={() => {
-                screenName == "Home"
-                  ? navigation.navigate("SingleProfile", {
-                      user_id: post.owner_id
-                    })
-                  : scroll_to_Top();
-              }}
-            >
-              {post.full_name}
-            </UserName>
+            <UserImage source={{ uri: `${post.user_img}` }} />
+            <UserName>{post.full_name}</UserName>
           </LineBox>
           <Delete style={{ marginRight: 10 }}>
             <FontAwesome5 name="ellipsis-h" size={18} color="#888" />
           </Delete>
         </Line1>
-        {post.post_caption == null ? null : (
+        {post.post_caption == null ? (
           <Line2>
-            <Autolink style={{ fontSize: 18 }}>{post.post_caption}</Autolink>
+            <Text>
+              Hello everyone dddddddddddddddddddddddddddddddddddddddddd
+            </Text>
           </Line2>
-        )}
+        ) : null}
         <Line3>
           {post.post_media == null ? null : post.is_video === "true" ? (
             <Video
@@ -203,7 +179,7 @@ const PostCard = ({ post, navigation, scroll_to_Top }) => {
           ) : (
             <PostImage
               source={{
-                uri: `${url}/${post.post_media}`
+                uri: `${post.post_media}`
               }}
             />
           )}
@@ -216,7 +192,7 @@ const PostCard = ({ post, navigation, scroll_to_Top }) => {
                 post.post_liker == null ? setPulse(true) : setPulse(false);
               }}
               name={post.post_liker == null ? "heart-outline" : "heart"}
-              size={25}
+              size={32}
               color={post.post_liker == null ? "black" : "red"}
               style={{
                 transform: [{ scale: currentValue }]
@@ -233,7 +209,7 @@ const PostCard = ({ post, navigation, scroll_to_Top }) => {
             </Text>
           </HeartWrapper>
           <CommentBackground>
-            <FontAwesome5 name="comment" size={24} />
+            <FontAwesome5 name="comment" size={29} />
             <Text style={{ fontSize: 18, fontWeight: "bold", marginLeft: 10 }}>
               {post.total_comments}
             </Text>

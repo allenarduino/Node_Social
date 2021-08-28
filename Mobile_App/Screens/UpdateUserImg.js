@@ -10,7 +10,6 @@ import {
   Dimensions,
   TouchableOpacity
 } from "react-native";
-import URL from "./url";
 import AsyncStorage from "@react-native-community/async-storage";
 import HeaderButtons from "react-navigation-header-buttons";
 import { Header } from "react-native-elements";
@@ -29,15 +28,15 @@ import jwt_decode from "jwt-decode";
 
 const UpdateUserImg = ({ route, navigation }) => {
   const MyContext = React.createContext(MyContext);
-  const { auth_state, auth_dispatch } = React.useContext(AuthContext);
-  let url = URL();
+  const { state, dispatch } = React.useContext(AuthContext);
+  let url = state.url;
   const initialState = {
     user_img: ""
   };
   const [mystate, setState] = React.useState(initialState);
   const [loading, controlLoading] = React.useState(false);
 
-  const token = auth_state.token;
+  const token = state.token;
   const decoded = jwt_decode(token);
   const user_id = decoded;
 
@@ -56,7 +55,7 @@ const UpdateUserImg = ({ route, navigation }) => {
     });
 
     let myHeaders = new Headers();
-    myHeaders.append("x-access-token", auth_state.token);
+    myHeaders.append("x-access-token", state.token);
     fetch(`${url}/update_user_img`, {
       method: "POST",
       body: data,

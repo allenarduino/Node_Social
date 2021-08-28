@@ -4,11 +4,9 @@ import PostCard from "../Components/PostCard/PostCard";
 import { PostContext } from "../contexts/PostContextProvider";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { ThemeContext } from "../contexts/ThemeContextProvider";
-import { Header } from "react-native-elements";
-import Icon from "react-native-vector-icons/Ionicons";
 import { useIsFocused } from "@react-navigation/native";
 import jwt_decode from "jwt-decode";
-import { ScrollView, View, Text, TouchableOpacity, Image } from "react-native";
+import { ScrollView } from "react-native";
 
 const Home = ({ navigation }) => {
   const { auth_state } = React.useContext(AuthContext);
@@ -37,11 +35,6 @@ const Home = ({ navigation }) => {
       .catch(err => console.log(err));
   };
 
-  //For retrieving current user image
-  const user_img = post_state.user.map(user => {
-    return user.user_img;
-  });
-
   React.useEffect(() => {
     if (isFocused) {
       fetch_posts();
@@ -49,52 +42,13 @@ const Home = ({ navigation }) => {
   }, [navigation, isFocused]);
 
   return (
-    <>
-      <Header
-        placement="left"
-        leftComponent={
-          <TouchableOpacity onPress={() => navigation.navigate("ProfileStack")}>
-            <Image
-              source={{ uri: `${url}/${user_img}` }}
-              style={{ height: 40, width: 40, borderRadius: 40 }}
-            />
-          </TouchableOpacity>
-        }
-        centerComponent={
-          <Text
-            style={{
-              fontSize: 24,
-              fontStyle: "italic",
-              fontWeight: "bold",
-              color: "rgb(95, 32, 155)",
-              alignSelf: "center"
-            }}
-          >
-            Teklife
-          </Text>
-        }
-        rightComponent={
-          <TouchableOpacity
-            onPress={() => navigation.navigate("ChatSection")}
-            style={{ marginLeft: 20 }}
-          >
-            <Icon name="chatbox-outline" size={27} color="rgb(95, 32, 155)" />
-          </TouchableOpacity>
-        }
-        containerStyle={{
-          backgroundColor: "#fff",
-          //justifyContent: 'space-around',
-          height: "14%"
-        }}
-      />
-      <ScrollView>
-        <View style={{ paddingBottom: 30 }}>
-          {post_state.posts.map(post => (
-            <PostCard post={post} navigation={navigation} />
-          ))}
-        </View>
-      </ScrollView>
-    </>
+    <ScrollView style={{ marginTop: 50 }}>
+      {post_state.posts.map(post => (
+        <>
+          <PostCard post={post} />
+        </>
+      ))}
+    </ScrollView>
   );
 };
 
