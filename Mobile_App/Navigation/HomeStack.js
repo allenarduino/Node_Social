@@ -1,6 +1,9 @@
 import React from "react";
 import { Text, View, Button, TouchableOpacity } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  useNavigationState
+} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "../Screens/Home";
 import ChatSection from "../Screens/ChatSection";
@@ -21,7 +24,7 @@ import BuynSellTab from "./BuynSellBottom";
 
 const Stack = createStackNavigator();
 
-function HomeStack({ navigation }) {
+function HomeStack() {
   return (
     <Stack.Navigator initialRouteName="Home" headerMode="screen">
       <Stack.Screen
@@ -39,7 +42,7 @@ function HomeStack({ navigation }) {
       <Stack.Screen
         name="DirectMessage"
         component={DirectMessage}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, tabBarVisible: false }}
       />
 
       <Stack.Screen

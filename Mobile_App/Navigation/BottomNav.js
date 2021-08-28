@@ -95,7 +95,10 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import Home from "../Screens/Home";
 import { FontAwesomeIcon } from "react-native-vector-icons/FontAwesome5";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  useNavigationState
+} from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeStack from "./HomeStack";
 import PeopleStack from "./PeopleStack";
@@ -124,22 +127,33 @@ const CustomTabBarButton = () => {
 };
 
 function BottomTab() {
+  let routeName = "";
+  const getTabBarVisibility = route => {
+    const routeName = route.state
+      ? route.state.routes[route.state.index].name
+      : "";
+
+    if (routeName === "DirectMessage") {
+      return false;
+    }
+
+    return true;
+  };
   return (
     <NavigationContainer>
       <Tab.Navigator
         tabBarOptions={{
           showLabel: false,
           style: {
-            bottom: 25,
-            paddingTop: 20,
-            paddingBottom: 20,
+            zIndex: 1,
             backgroundColor: "#fff",
             alignItems: "center",
             textAlign: "center",
-            left: 20,
-            right: 20,
-            width: "90%",
-            borderRadius: 100,
+            //left: 20,
+            //right: 20,
+            //width: "90%",
+            borderTopLeftRadius: 50,
+            borderTopRightRadius: 50,
             height: 55
           }
         }}
@@ -148,7 +162,8 @@ function BottomTab() {
         <Tab.Screen
           name="Home"
           component={HomeStack}
-          options={{
+          options={({ route }) => ({
+            tabBarVisible: getTabBarVisibility(route),
             tabBarLabel: "",
             inactiveColor: "black",
             tabBarIcon: ({ focused }) => (
@@ -173,7 +188,7 @@ function BottomTab() {
                 </Text>
               </View>
             )
-          }}
+          })}
         />
 
         <Tab.Screen
