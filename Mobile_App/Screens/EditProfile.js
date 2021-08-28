@@ -11,6 +11,9 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { AuthContext } from "../contexts/AuthContextProvider";
+import { ProfileContext } from "../contexts/ProfileContextProvider";
+import URL from "./url";
+import { useIsFocused } from "@react-navigation/native";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -18,12 +21,15 @@ const HEIGHT = Dimensions.get("window").height;
 const EditProfile = ({ navigation, route }) => {
   const [full_name, setfullName] = React.useState("");
   const [bio, setBio] = React.useState("");
+  const [my_profile, setMyProfile] = React.useState([]);
   const [loadingName, controlNameLoading] = React.useState(false);
   const [loadingBio, controlBioLoading] = React.useState(false);
   const [loggedOutLoading, controlLogoutLoading] = React.useState(false);
-  const { state, dispatch } = React.useContext(AuthContext);
+  const { auth_state, auth_dispatch } = React.useContext(AuthContext);
+  const { profile_state, profile_dispatch } = React.useContext(ProfileContext);
 
-  let url = state.url;
+  let url = URL();
+  const isFocused = useIsFocused();
 
   const update_name = () => {
     if (full_name == "") {
@@ -31,7 +37,7 @@ const EditProfile = ({ navigation, route }) => {
     } else {
       controlNameLoading(true);
       const myHeaders = new Headers();
-      myHeaders.append("x-access-token", state.token);
+      myHeaders.append("x-access-token", auth_state.token);
       myHeaders.append("Content-Type", "application/json");
       fetch(`${url}/update_name`, {
         method: "POST",
@@ -56,7 +62,7 @@ const EditProfile = ({ navigation, route }) => {
     } else {
       controlBioLoading(true);
       const myHeaders = new Headers();
-      myHeaders.append("x-access-token", state.token);
+      myHeaders.append("x-access-token", auth_state.token);
       myHeaders.append("Content-Type", "application/json");
       fetch(`${url}/update_bio`, {
         method: "POST",
@@ -78,7 +84,7 @@ const EditProfile = ({ navigation, route }) => {
   const logOut = () => {
     controlLogoutLoading(true);
     let data = new FormData();
-    data.append("token", state.token);
+    data.append("token", auth_state.token);
     fetch(`${url}/log_out.php`, {
       method: "POST",
       body: data
@@ -120,7 +126,7 @@ const EditProfile = ({ navigation, route }) => {
             <Icon
               name="camera"
               size={35}
-              color="rgb(95, 32, 155)"
+              color="#fff"
               style={{
                 alignSelf: "center",
                 marginRight: 10,
@@ -177,16 +183,6 @@ const EditProfile = ({ navigation, route }) => {
               </View>
             </View>
           </View>
-          <TouchableOpacity
-            style={styles.logoutButton}
-            onPress={() => logOut()}
-          >
-            {loggedOutLoading ? (
-              <Text style={styles.buttonText}>Logging out...</Text>
-            ) : (
-              <Text style={styles.buttonText}>Logout</Text>
-            )}
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
