@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const app = express();
 const fs = require("fs");
 const db = require("../database");
 const path = require("path");
@@ -41,6 +40,26 @@ router.post("/create_post", type, auth, function(req, res) {
   });
 });
 
+//For creating post without any media
+router.post("/write_post", auth, (req, res) => {
+  const post_caption = req.body.post_caption;
+  const user_id = req.user_id;
+  const inputData = [post_caption, user_id];
+
+  console.log(post_caption);
+  console.log(user_id);
+  const sql = `INSERT INTO posts(post_caption,owner_id) 
+  VALUES (?,?)`;
+
+  db.query(sql, inputData, function(err) {
+    console.log(post_caption);
+    console.log(err);
+    res.status(200).json({
+      mesaage: "Post Created"
+    });
+  });
+});
+
 // For displaying posts on homepage
 
 router.get("/posts", auth, (req, res) => {
@@ -55,27 +74,6 @@ router.get("/posts", auth, (req, res) => {
     res.status(200).json({ posts: data[0], user: data[1] });
   });
 });
-
-// For displaying posts on homepage
-/*
-app.get("/posts", auth, (req, res) => {
-  res.set({
-    "Cache-Control": "no-cache",
-    "Content-Type": "text/event-stream",
-    Connection: "keep-alive"
-  });
-  res.flushHeaders();
-  user_id = req.user_id;
-  const sql = `SELECT  p_id,post_caption,post_media,is_video,owner_id,u.full_name,u.user_img,u.user_id,
-  (SELECT post_liker FROM post_likes pl WHERE pl.post_liker=? AND pl.L_post_id=p.p_id) as post_liker,
-  (SELECT COUNT(*) FROM post_comments WHERE p.p_id=post_comments.C_post_id )as total_comments,
-  (SELECT COUNT(*) FROM post_likes WHERE p.p_id=post_likes.L_post_id) as total_likes
-  FROM posts p,users u WHERE u.user_id=p.owner_id  ORDER BY p.p_id DESC`;
-  db.query(sql, [user_id], function(err, data) {
-    res.status(200).json({ posts: data });
-  });
-});
-*/
 
 //For user to like a post
 router.post("/like_post", auth, (req, res) => {
