@@ -1,16 +1,16 @@
 import React from "react";
-import * as Icon from "react-feather";
-import { PostContext } from "../../contexts/PostContextProvider";
-import { AuthContext } from "../../contexts/AuthContextProvider";
-import { ThemeContext } from "../../contexts/ThemeContextProvider";
-
-import { Fade } from "react-reveal";
-import Loader from "../../components/Loader/Loader";
-import PostCard from "../../components/PostCard/PostCard";
-import HomeHeader from "../../components/HomeHeader/HomeHeader";
-import jwt_decode from "jwt-decode";
-import { Link } from "react-router-dom";
 import SideNav from "../../components/SideNav/SideNav";
+import { AuthContext } from "../../contexts/AuthContextProvider";
+import { ProfileContext } from "../../contexts/ProfileContextProvider";
+import { PostContext } from "../../contexts/PostContextProvider";
+import { ThemeContext } from "../../contexts/ThemeContextProvider";
+import { useHistory, useLocation, Link } from "react-router-dom";
+import { Fade } from "react-reveal";
+import HomeHeader from "../../components/HomeHeader/HomeHeader";
+import Loader from "../../components/Loader/Loader";
+import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
 
 import {
   ContentContainer,
@@ -21,38 +21,43 @@ import {
   Middle
 } from "./styles";
 
-const Home = () => {
+const BuyNSell = () => {
+  const useStyles = makeStyles(theme => ({
+    root: {
+      flexGrow: 1
+    },
+    paper: {
+      padding: theme.spacing(2),
+      textAlign: "center",
+      color: theme.palette.text.secondary
+    }
+  }));
+  const [products, setProducts] = React.useState([]);
+  const { profile_state, profile_dispatch } = React.useContext(ProfileContext);
   const { post_state, post_dispatch } = React.useContext(PostContext);
-  const { auth_state } = React.useContext(AuthContext);
   const { theme_state } = React.useContext(ThemeContext);
-  const [modalVisible, setModalVisible] = React.useState(false);
-
+  const { auth_state } = React.useContext(AuthContext);
   let url = auth_state.url;
 
-  const user_id =
-    localStorage.getItem("token") && jwt_decode(localStorage.getItem("token"));
-
-  const fetch_posts = () => {
+  const fetch_products = () => {
     let myHeaders = new Headers();
-    myHeaders.append(
-      "x-access-token",
-      auth_state.token || localStorage.getItem("token")
-    );
-    fetch(`${url}/posts`, {
+    myHeaders.append("Content-Type", "application/json");
+    fetch(`${url}/products`, {
       method: "GET",
       headers: myHeaders
     })
       .then(res => res.json())
       .then(data => {
-        post_dispatch({ type: "FETCH_POSTS", payload: data.posts });
-        post_dispatch({ type: "FETCH_USER", payload: data.user });
+        setProducts(data.products);
       })
       .catch(err => console.log(err));
+    setTimeout(fetch_products, 50000);
   };
 
   React.useEffect(() => {
-    fetch_posts();
+    fetch_products();
   }, []);
+
   return (
     <main>
       <HomeHeader />
@@ -62,12 +67,12 @@ const Home = () => {
         </LeftSide>
 
         <Middle style={{ backgroundColor: theme_state.background }}>
-          {post_state.posts.length == 0 ? (
+          {products.length == 0 ? (
             <Loader />
           ) : (
-            post_state.posts.map(post => (
+            products.map(post => (
               <Fade bottom duration={900} distance="40px">
-                <PostCard post={post} />
+                <div>Products</div>
               </Fade>
             ))
           )}
@@ -89,4 +94,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default BuyNSell;

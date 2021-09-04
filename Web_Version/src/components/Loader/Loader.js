@@ -5,15 +5,12 @@ import { ThemeContext } from "../../contexts/ThemeContextProvider";
 
 const Center = styled.div`
   display: flex;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   justify-content: center;
   align-items: center;
-  position: sticky;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  flex: 1;
+  position: fixed;
+  align-self: center;
 `;
 
 const Loader = () => {

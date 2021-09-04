@@ -96,9 +96,27 @@ export const Line2 = styled.div`
   white-space: pre-line;
 `;
 export const Line3 = styled.div`
+  @media (min-width: ${769}px) {
+    width: 100%;
+    max-height: 400px;
+  }
   width: 100%;
   height: auto;
   max-height: 300px;
+  overflow: hidden;
+  border-radius: 15px;
+`;
+
+export const VideoContainer = styled.div`
+  @media (min-width: ${769}px) {
+    width: 100%;
+    height: 300px;
+  }
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  position: relative;
+  border: 2px solid white;
   overflow: hidden;
   border-radius: 15px;
 `;

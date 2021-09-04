@@ -1,19 +1,17 @@
 import styled from "styled-components";
 
-//Container for posts and side nav
-export const ContentContainer = styled.section`
+//Container for products and side nav
+export const ContentContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
   flex: 1;
-  padding-bottom: 80px;
+  padding-bottom: 100px;
 
-  height: 100%;
-  /* position: absolute;*/
-  left: 0;
-  width: 100%;
-  /*overflow: hidden;*/
+  display: grid;
+  height: 100vh;
 `;
+
 export const LeftSide = styled.div`
   @media (max-width: ${769}px) {
     display: none;
@@ -35,12 +33,11 @@ export const Middle = styled.div`
     width: 100%;
   }
   width: 45%;
-  /*overflow: hidden;*/
+
   margin: 0 auto;
   height: 100%;
   align-self: center;
-  display: flex;
-  flex-direction: column;
+  display: grid;
   padding-top: 80px;
   padding-bottom: 80px;
   overflow-x: hidden;

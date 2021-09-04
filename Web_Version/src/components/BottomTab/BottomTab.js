@@ -53,21 +53,6 @@ const BottomTab = props => {
           )}
         </BnTab>
         <BnTab>
-          {location.pathname === "/" ? (
-            <Link to="/users" style={{ color: "black" }}>
-              <Icon.Users
-                name="home-outline"
-                color={theme_state.color}
-                size={27}
-              />
-            </Link>
-          ) : (
-            <Link to="/users" style={{ color: theme_state.color }}>
-              <Icon.Users size={25} color={theme_state.color} />
-            </Link>
-          )}
-        </BnTab>
-        <BnTab>
           {location.pathname === "/create_post" ? (
             <Icon.PlusCircle
               className="mr-2 feedIcons"
@@ -102,25 +87,7 @@ const BottomTab = props => {
             </Link>
           )}
         </BnTab>
-        <BnTab>
-          {location.pathname === "/buy_n_sell" ? (
-            <Link to="/profile" style={{ color: theme_state.color }}>
-              <Icon.ShoppingBag
-                className="mr-2 feedIcons"
-                color={theme_state.color}
-                size={27}
-              />
-            </Link>
-          ) : (
-            <Link to="/buy_n_sell" style={{ color: theme_state.color }}>
-              <Icon.ShoppingBag
-                className="mr-2 feedIcons"
-                size={25}
-                color={theme_state.color}
-              />
-            </Link>
-          )}
-        </BnTab>
+
         {/*****************Modal*************** */}
         <Sheet isOpen={isOpen} onClose={() => setOpen(false)}>
           <Sheet.Container

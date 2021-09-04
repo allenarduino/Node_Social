@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 
 import Loader from "../../components/Loader/Loader";
 import PostCard from "../../components/PostCard/PostCard";
+import SideNav from "../../components/SideNav/SideNav";
 import { Fade } from "react-reveal";
 import jwt_decode from "jwt-decode";
 import {
@@ -54,52 +55,54 @@ const Profile = () => {
   }, []);
 
   return (
-    <main>
-      {profile_state.profile.length == 0 ? (
-        <Loader />
-      ) : (
-        <ContentContainer style={{ backgroundColor: theme_state.background }}>
-          <LeftSide></LeftSide>
-          <Middle>
-            {profile_state.profile.map(profile => (
-              <Fade bottom duration={900} distance="40px">
-                <ProfileContainer>
-                  <CoverPhoto
-                    src={`${url}/${profile.coverphoto}`}
-                    onClick={() =>
-                      history.push("/view_image", { image: profile.coverphoto })
-                    }
-                  />
-                  <UserImg
-                    src={`${url}/${profile.user_img}`}
-                    onClick={() =>
-                      history.push("/view_image", { image: profile.user_img })
-                    }
-                  />
-                  <FullName style={{ color: theme_state.color }}>
-                    {profile.full_name}
-                  </FullName>
-                  <Bio style={{ color: theme_state.color }}>
-                    <Linkify>{profile.bio}</Linkify>
-                  </Bio>
-                  <EditProfileButton
-                    onClick={() => history.push("/editprofile")}
-                  >
-                    Edit Profile
-                  </EditProfileButton>
-                </ProfileContainer>
-              </Fade>
-            ))}
-            {profile_state.user_posts.map(post => (
+    <>
+      <ContentContainer style={{ backgroundColor: theme_state.background }}>
+        <LeftSide style={{ backgroundColor: theme_state.background }}>
+          <SideNav />
+        </LeftSide>
+        <Middle style={{ backgroundColor: theme_state.background }}>
+          {profile_state.profile.map(profile => (
+            <Fade bottom duration={900} distance="40px">
+              <ProfileContainer>
+                <CoverPhoto
+                  src={`${url}/${profile.coverphoto}`}
+                  onClick={() =>
+                    history.push("/view_image", { image: profile.coverphoto })
+                  }
+                />
+                <UserImg
+                  src={`${url}/${profile.user_img}`}
+                  onClick={() =>
+                    history.push("/view_image", { image: profile.user_img })
+                  }
+                />
+                <FullName style={{ color: theme_state.color }}>
+                  {profile.full_name}
+                </FullName>
+                <Bio style={{ color: theme_state.color }}>
+                  <Linkify>{profile.bio}</Linkify>
+                </Bio>
+                <EditProfileButton onClick={() => history.push("/editprofile")}>
+                  Edit Profile
+                </EditProfileButton>
+              </ProfileContainer>
+            </Fade>
+          ))}
+
+          {profile_state.user_posts.length == 0 ? (
+            <Loader />
+          ) : (
+            profile_state.user_posts.map(post => (
               <Fade bottom duration={900} distance="40px">
                 <PostCard post={post} />
               </Fade>
-            ))}
-          </Middle>
-          <RightSide></RightSide>
-        </ContentContainer>
-      )}
-    </main>
+            ))
+          )}
+        </Middle>
+
+        <RightSide></RightSide>
+      </ContentContainer>
+    </>
   );
 };
 export default Profile;

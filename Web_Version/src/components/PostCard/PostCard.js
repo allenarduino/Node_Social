@@ -21,7 +21,8 @@ import {
   LineBox,
   PostCardDesign,
   Line3,
-  Line4
+  Line4,
+  VideoContainer
 } from "./styles";
 
 //Material UI animation  for pulsating heart
@@ -205,9 +206,8 @@ const PostCard = ({ post }) => {
           >
             <Linkify>{post.post_caption}</Linkify>
           </Line2>
-
-          <Line3 style={{ marginTop: 15 }}>
-            {post.post_media == null ? null : post.is_video == "false" ? (
+          {post.post_media == null ? null : post.is_video == "false" ? (
+            <Line3 style={{ marginTop: 15 }}>
               <img
                 src={`${url}/${post.post_media}`}
                 style={{ width: "100%" }}
@@ -215,15 +215,17 @@ const PostCard = ({ post }) => {
                   history.push("/view_image", { image: post.post_media })
                 }
               />
-            ) : (
+            </Line3>
+          ) : (
+            <VideoContainer>
               <ReactPlayer
                 url={`${url}/${post.post_media}`}
                 width="100%"
                 height="100%"
                 controls={true}
               />
-            )}
-          </Line3>
+            </VideoContainer>
+          )}
           <Line4
             style={{
               color: theme_state.color

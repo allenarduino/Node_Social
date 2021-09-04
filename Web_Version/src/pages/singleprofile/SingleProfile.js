@@ -21,6 +21,7 @@ import {
   Middle
 } from "./styles";
 import { RightSide, LeftSide } from "../home/styles";
+import SideNav from "../../components/SideNav/SideNav";
 
 const SingleProfile = () => {
   const history = useHistory();
@@ -61,7 +62,9 @@ const SingleProfile = () => {
         <Loader />
       ) : (
         <ContentContainer style={{ backgroundColor: theme_state.background }}>
-          <RightSide></RightSide>
+          <LeftSide>
+            <SideNav />
+          </LeftSide>
           <Middle>
             {profile_state.profile.map(profile => (
               <Fade bottom duration={900} distance="40px">
@@ -106,7 +109,7 @@ const SingleProfile = () => {
               </Fade>
             ))}
           </Middle>
-          <LeftSide></LeftSide>
+          <RightSide></RightSide>
         </ContentContainer>
       )}
     </main>
