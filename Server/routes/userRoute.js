@@ -3,7 +3,6 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const db = require("../database");
 const jwt = require("jsonwebtoken");
-const secret = require("../secret");
 const auth = require("../middlewares/auth");
 const multer = require("multer");
 const path = require("path");
@@ -62,7 +61,7 @@ router.post("/login", (req, res) => {
       console.log(data[0]["full_name"]);
       console.log(password_verify);
       if (password_verify) {
-        const token = jwt.sign(user_id, secret.secret_key);
+        const token = jwt.sign(user_id, process.env.SECRET_KEY);
         res.status(200).json(token);
       } else {
         res.status(200).json({
@@ -89,8 +88,6 @@ router.get("/user_profile/:user_id", auth, (req, res) => {
   FROM posts p,users u WHERE u.user_id=p.owner_id AND p.owner_id=? ORDER BY p.p_id DESC`;
   db.query(sql, [user_id, auth_user_id, user_id], function(err, data) {
     res.status(200).json({ user_profile: data[0], user_posts: data[1] });
-    console.log(data[0]);
-    console.log(data[1]);
   });
 });
 

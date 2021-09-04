@@ -5,7 +5,6 @@ const fs = require("fs");
 const db = require("../database");
 const path = require("path");
 const auth = require("../middlewares/auth");
-const sseExpress = require("sse-express");
 
 //Store uploaded image in a folder
 const storage = multer.diskStorage({
@@ -142,6 +141,20 @@ router.get("/fetch_comments/:post_id", (req, res) => {
   db.query(sql, [post_id], function(err, data) {
     res.status(200).json({
       comments: data
+    });
+  });
+});
+
+//For user to delete a comment
+router.delete("/delete_comment", (req, res) => {
+  const comment_id = req.body.comment_id;
+  console.log(comment_id);
+  const sql = `DELETE FROM post_comments WHERE id=${comment_id}`;
+
+  db.query(sql, function(err, data) {
+    console.log(err);
+    res.status(200).json({
+      mesaage: "Comment Deleted"
     });
   });
 });

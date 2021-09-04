@@ -1,12 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const app = express();
 const fs = require("fs");
 const db = require("../database");
 const path = require("path");
 const auth = require("../middlewares/auth");
-const sseExpress = require("sse-express");
 
 //Store uploaded image in a folder
 const storage = multer.diskStorage({
