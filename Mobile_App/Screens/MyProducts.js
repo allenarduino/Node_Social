@@ -67,7 +67,7 @@ const MyProducts = ({ navigation }) => {
     })
       .then(res => res.json())
       .then(data => {
-        alert(data.message);
+        alert("Product Deleted");
       })
       .catch(err => console.log(err));
   };

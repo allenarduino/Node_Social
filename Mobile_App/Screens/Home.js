@@ -8,7 +8,14 @@ import { Header } from "react-native-elements";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useIsFocused } from "@react-navigation/native";
 import jwt_decode from "jwt-decode";
-import { ScrollView, View, Text, TouchableOpacity, Image } from "react-native";
+import {
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Modal
+} from "react-native";
 import PostSkeletonLoader from "../Components/PostSkeletonLoader";
 
 const Home = ({ navigation }) => {

@@ -10,8 +10,6 @@ import {
   Image
 } from "react-native";
 import BottomTab from "./Navigation/BottomNav";
-import SwitchNavOne from "./Navigation/SwitchNavOne";
-import SwitchNavTwo from "./Navigation/SwitchNavTwo";
 import { NavigationContainer } from "@react-navigation/native";
 import MainStackNavigatorOne from "./Navigation/StackNavigationOne";
 import AsyncStorage from "@react-native-community/async-storage";

@@ -15,61 +15,36 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthContext } from "../contexts/AuthContextProvider";
-//import { MessageContext } from "../Context/MessageContext";
 import jwt_decode from "jwt-decode";
 import { Header } from "react-native-elements";
+import { useIsFocused } from "@react-navigation/native";
 import URL from "./url";
 import uuid from "uuid";
-
 const io = require("socket.io-client");
+
+const socket = io("http://10.74.9.244:3000", {
+  transports: ["websocket"]
+});
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 export const MessageContext = React.createContext();
 
-const socket = io("http://10.74.15.133:3000", {
-  transports: ["websocket"]
-});
-
 const DirectMessage = ({ route, navigation }) => {
   const { auth_state } = React.useContext(AuthContext);
-  let url = URL();
-  //const { messagesState, setMessages } = React.useContext(MessageContext);
   const scroll = React.useRef();
   const myinput = React.useRef();
+  let url = URL();
 
-  const initialState = {
-    messages: []
-  };
-
-  const ReducerFunction = (prevState, action) => {
-    switch (action.type) {
-      case "ADD_MESSAGE":
-        return {
-          ...prevState,
-          messages: [...prevState.messages, action.payload]
-        };
-      case "FETCH_MESSAGES":
-        return {
-          ...prevState,
-          messages: action.payload
-        };
-      default:
-        return prevState;
-    }
-  };
-
-  const [messagesState, setMessages] = React.useReducer(
-    ReducerFunction,
-    initialState
-  );
+  const isFocused = useIsFocused();
 
   const token = auth_state.token;
   const decoded = jwt_decode(token);
   const user_id = decoded;
 
   const [message, setMessage] = React.useState("");
+  const [inputValue, setInputValue] = React.useState("");
   const [messages, updateMessages] = React.useState([]);
   const [sent, updateSent] = React.useState(false);
   const [max, setMax] = React.useState("");
@@ -87,45 +62,53 @@ const DirectMessage = ({ route, navigation }) => {
     if (message.trim().length === 0) {
       return;
     } else {
-      setMessage("");
+      setInputValue("");
+      /* socket.emit("chat", offline_data);
+      socket.on("chat", data => {
+        alert(data);
+      });*/
       updateMessages([...messages, offline_data]);
-      const formdata = new FormData();
-      formdata.append("message", message);
-      formdata.append("receipient_id", receipient_id);
-      fetch(`${url}/send_message.php`, {
+      //Sending message to the server
+      let myHeaders = new Headers();
+      myHeaders.append("x-access-token", auth_state.token);
+      myHeaders.append("Content-Type", "application/json");
+      const data = { message: message };
+      fetch(`${url}/send_message/${receipient_id}`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${auth_state.token}`
-        },
-        body: formdata
+        headers: myHeaders,
+        body: JSON.stringify(data)
       })
         .then(res => res.json())
         .then(data => {
-          updateSent(true);
+          console.log("Comment Created");
         })
         .catch(err => console.log(err));
     }
   };
 
   const fetch_messages = () => {
-    fetch(`${url}/code_reservoir/fetch_messages.php/`, {
+    const receipient_id = route.params.user_id;
+    let myHeaders = new Headers();
+    myHeaders.append("x-access-token", auth_state.token);
+    myHeaders.append("Content-Type", "application/json");
+    fetch(`${url}/fetch_messages/${receipient_id}`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${auth_state.token}`
-      }
+      headers: myHeaders
     })
       .then(res => res.json())
       .then(data => {
-        updateSent(true);
         updateMessages(data.messages);
+        controlLoading(false);
       })
       .catch(err => console.log(err));
     setTimeout(fetch_messages, 2000);
   };
 
   React.useEffect(() => {
-    fetch_messages();
-  }, []);
+    if (isFocused) {
+      fetch_messages();
+    }
+  }, [navigation, isFocused]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -165,7 +148,11 @@ const DirectMessage = ({ route, navigation }) => {
         }}
       />
 
-      <KeyboardAvoidingView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+      >
         <ScrollView
           ref={scroll}
           onContentSizeChange={() =>
@@ -188,7 +175,6 @@ const DirectMessage = ({ route, navigation }) => {
             ))}
           </View>
         </ScrollView>
-
         <View style={{ flexDirection: "row", justifyContent: "center" }}>
           <View style={styles.inputWrapper}>
             <TextInput
@@ -197,8 +183,11 @@ const DirectMessage = ({ route, navigation }) => {
               style={styles.inputField}
               keyboardAppearance="dark"
               keyboardType="default"
-              onChangeText={message => setMessage(message)}
-              value={message}
+              onChangeText={(message, inputValue) => {
+                setMessage(message);
+                setInputValue(inputValue);
+              }}
+              value={inputValue}
               ref={myinput}
             />
             <Icon name="image" size={25} color="rgb(95, 32, 155)" />
@@ -217,7 +206,6 @@ const DirectMessage = ({ route, navigation }) => {
             onPress={() => sendMessage()}
           />
         </View>
-
         <View style={{ marginTop: 10 }}></View>
       </KeyboardAvoidingView>
     </View>

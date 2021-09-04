@@ -12,6 +12,7 @@ import { List, ListItem, Header } from "react-native-elements";
 import { Avatar } from "react-native-elements/dist/avatar/Avatar";
 import { ScrollView, RectButton } from "react-native-gesture-handler";
 import { AuthContext } from "../contexts/AuthContextProvider";
+import URL from "./url";
 import Icon from "react-native-vector-icons/Ionicons";
 
 const WIDTH = Dimensions.get("window").width;
@@ -23,20 +24,20 @@ const ChatSection = ({ navigation }) => {
   const [formVisible, setFormVisible] = React.useState(false);
   const [filteredData, setFilteredData] = React.useState([]);
   const [search, setSearch] = React.useState("");
-  const { state, dispatch } = React.useContext(AuthContext);
-  let url = state.url;
+  const { auth_state, auth_dispatch } = React.useContext(AuthContext);
+  let url = URL();
 
   const showForm = () => {
     setFormVisible(true);
   };
 
   const fetch_chats = () => {
-    fetch(`${url}/fetch_chats.php`, {
-      methods: "GET",
-      "Content-Type": "application/json",
-      headers: {
-        Authorization: `Bearer ${state.token}`
-      }
+    let myHeaders = new Headers();
+    myHeaders.append("x-access-token", auth_state.token);
+    myHeaders.append("Content-Type", "application/json");
+    fetch(`${url}/fetch_chats`, {
+      method: "GET",
+      headers: myHeaders
     })
       .then(res => res.json())
       .then(data => {
@@ -148,7 +149,7 @@ const ChatSection = ({ navigation }) => {
                 }}
               >
                 <Image
-                  source={{ uri: `${url}/code_reservoir/${item.user_img}` }}
+                  source={{ uri: `${url}/${item.user_img}` }}
                   size="giant"
                   style={styles.userImg}
                 />

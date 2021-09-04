@@ -9,7 +9,6 @@ import {
 import BottomTab from "../Navigation/BottomNav";
 import URL from "./url";
 import AsyncStorage from "@react-native-community/async-storage";
-import SwitchNav from "../Navigation/SwitchNavOne";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { AppStyles } from "../AppStyles";
 import * as Permissions from "expo-permissions";

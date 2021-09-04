@@ -19,6 +19,7 @@ import PostCard from "../Components/PostCard/PostCard";
 import jwt_decode from "jwt-decode";
 import Autolink from "react-native-autolink";
 import { useIsFocused } from "@react-navigation/native";
+import SettingsPopOver from "../Components/SettingsPopOver/SettingsPopOver";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
@@ -53,6 +54,7 @@ const SingleProfile = ({ navigation, route }) => {
   const [myposts, fetchPosts] = React.useState([]);
   const [myprofile, fetchProfile] = React.useState([]);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [settingsVisisible, openSettings] = React.useState(false);
   const [bottomModalVisible, setBottomModalVisible] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState(null);
   const video = React.useRef(null);
@@ -142,7 +144,7 @@ const SingleProfile = ({ navigation, route }) => {
           </Text>
         }
         rightComponent={
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => openSettings(!settingsVisisible)}>
             <Icon name="settings" size={25} color="black" />
           </TouchableOpacity>
         }
@@ -152,7 +154,7 @@ const SingleProfile = ({ navigation, route }) => {
           height: "13%"
         }}
       />
-
+      {settingsVisisible ? <SettingsPopOver /> : null}
       {loading ? (
         <View
           style={{
@@ -170,15 +172,31 @@ const SingleProfile = ({ navigation, route }) => {
         <ScrollView ref={scrollRef}>
           {profile_state.profile.map(p => (
             <View>
-              <Image
-                source={{ uri: `${url}/${p.coverphoto}` }}
-                style={styles.coverPhoto}
-              />
-              <View style={{ alignItems: "center" }}>
+              <TouchableWithoutFeedback
+                onPress={() =>
+                  navigation.navigate("DetailedImage", {
+                    detailed_image: p.coverphoto
+                  })
+                }
+              >
                 <Image
-                  source={{ uri: `${url}/${p.user_img}` }}
-                  style={styles.avartar}
+                  source={{ uri: `${url}/${p.coverphoto}` }}
+                  style={styles.coverPhoto}
                 />
+              </TouchableWithoutFeedback>
+              <View style={{ alignItems: "center" }}>
+                <TouchableWithoutFeedback
+                  onPress={() =>
+                    navigation.navigate("DetailedImage", {
+                      detailed_image: p.user_img
+                    })
+                  }
+                >
+                  <Image
+                    source={{ uri: `${url}/${p.user_img}` }}
+                    style={styles.avartar}
+                  />
+                </TouchableWithoutFeedback>
                 <Text style={styles.name}>{p.full_name}</Text>
                 <Text style={styles.bio}>{p.bio}</Text>
                 {user_id == p.user_id ? (

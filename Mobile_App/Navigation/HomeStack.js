@@ -10,6 +10,7 @@ import ChatSection from "../Screens/ChatSection";
 import SingleProfile from "../Screens/SingleProfile";
 import DirectMessage from "../Screens/DirectMessage";
 import SinglePost from "../Screens/SinglePost";
+import CommentScreen from "../Screens/CommentScreen";
 import EditProfile from "../Screens/EditProfile";
 import ChooseUserImg from "../Screens/ChooseUserImg";
 import ChooseCoverPhoto from "../Screens/ChooseCoverPhoto";
@@ -19,8 +20,7 @@ import NewPostScreen from "../Screens/PostPicture";
 import Icon from "react-native-vector-icons/Ionicons";
 
 import MyContext from "../Screens/PostPicture";
-import LocateShuttle from "../Screens/LocateShuttle";
-import BuynSellTab from "./BuynSellBottom";
+import ViewImage from "../Screens/ViewImage";
 
 const Stack = createStackNavigator();
 
@@ -54,22 +54,19 @@ function HomeStack() {
       />
 
       <Stack.Screen
-        name="LocateShuttle"
-        component={LocateShuttle}
-        options={{
-          title: "Locate Shuttle"
-        }}
-      />
-
-      <Stack.Screen
         name="ChatSection"
         component={ChatSection}
         options={{ headerShown: false }}
       />
 
       <Stack.Screen
-        name="BuynSell"
-        component={BuynSellTab}
+        name="Comments"
+        component={CommentScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="DetailedImage"
+        component={ViewImage}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

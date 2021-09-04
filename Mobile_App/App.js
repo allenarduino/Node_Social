@@ -4,6 +4,7 @@ import AuthContext from "./contexts/AuthContextProvider";
 import ThemeContext from "./contexts/ThemeContextProvider";
 import PostContext from "./contexts/PostContextProvider";
 import ProfileContext from "./contexts/ProfileContextProvider";
+import CommentContext from "./contexts/CommentContextProvider";
 
 //For disabling the warnings
 console.disableYellowBox = true;
@@ -14,7 +15,9 @@ const App = () => {
       <ThemeContext>
         <PostContext>
           <ProfileContext>
-            <Index />
+            <CommentContext>
+              <Index />
+            </CommentContext>
           </ProfileContext>
         </PostContext>
       </ThemeContext>

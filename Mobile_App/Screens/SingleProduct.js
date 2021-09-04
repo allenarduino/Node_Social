@@ -34,6 +34,7 @@ const SingleProduct = ({ navigation, route }) => {
     price,
     description,
     user_img,
+    user_id,
     full_name,
     phone_number
   } = route.params;
@@ -67,21 +68,46 @@ const SingleProduct = ({ navigation, route }) => {
         }}
       />
       <ScrollView>
-        <Image
-          source={{ uri: `${url}/${product_img}` }}
-          style={styles.coverPhoto}
-        />
+        <TouchableWithoutFeedback
+          onPress={() =>
+            navigation.navigate("DetailedImage", {
+              detailed_image: product_img
+            })
+          }
+        >
+          <Image
+            source={{ uri: `${url}/${product_img}` }}
+            style={styles.coverPhoto}
+          />
+        </TouchableWithoutFeedback>
 
         <View style={{ marginTop: 20, marginLeft: 20 }}>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.price}>GHC {price}</Text>
           <Text style={styles.description}>{description}</Text>
           <View style={{ flexDirection: "row", marginTop: 20 }}>
-            <Image
-              source={{ uri: `${url}/${user_img}` }}
-              style={styles.avartar}
-            />
-            <Text style={styles.full_name}>{full_name}</Text>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                navigation.navigate("SingleProfile", {
+                  user_id: user_id
+                });
+              }}
+            >
+              <Image
+                source={{ uri: `${url}/${user_img}` }}
+                style={styles.avartar}
+              />
+            </TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback
+              onPress={() => {
+                navigation.navigate("SingleProfile", {
+                  user_id: user_id
+                });
+              }}
+            >
+              <Text style={styles.full_name}>{full_name}</Text>
+            </TouchableWithoutFeedback>
           </View>
         </View>
         <TouchableOpacity

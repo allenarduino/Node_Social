@@ -11,6 +11,7 @@ import ChooseCoverPhoto from "../Screens/ChooseCoverPhoto";
 import UpdateUserImg from "../Screens/UpdateUserImg";
 import UpdateCoverPhoto from "../Screens/UpdateCoverPhoto";
 import SinglePost from "../Screens/SinglePost";
+import ViewImage from "../Screens/ViewImage";
 
 const Stack = createStackNavigator();
 
@@ -69,6 +70,11 @@ function ProfileStack({ navigation }) {
       <Stack.Screen
         name="SingleProfile"
         component={SingleProfile}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="DetailedImage"
+        component={ViewImage}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

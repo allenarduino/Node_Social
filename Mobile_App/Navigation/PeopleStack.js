@@ -7,6 +7,7 @@ import SingleProfile from "../Screens/SingleProfile";
 import People from "../Screens/People";
 import DirectMessage from "../Screens/DirectMessage";
 import Icon from "react-native-vector-icons/Ionicons";
+import ViewImage from "../Screens/ViewImage";
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,12 @@ function PeopleStack({ navigation }) {
       <Stack.Screen
         name="DirectMessage"
         component={DirectMessage}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="DetailedImage"
+        component={ViewImage}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

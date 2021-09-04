@@ -1,2 +1,3 @@
-const url = () => "http://10.74.9.244:4000";
+//Backend API Endpoint
+const url = () => "http://10.74.13.53:5000";
 export default url;

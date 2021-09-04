@@ -8,7 +8,8 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableWithoutFeedback
 } from "react-native";
 import URL from "./url";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -114,6 +115,7 @@ const UpdateCoverPhoto = ({ route, navigation }) => {
             source={{ uri: `${route.params.image}` }}
             style={styles.myImage}
           />
+
           <Text
             style={{
               alignSelf: "center",
