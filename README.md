@@ -21,7 +21,7 @@ More features will be added to the project in the future.
 <img
 		width="210"
 		alt="Capture 1"
-		src="https://github.com/allenarduino/Node_social/screenshots/screenshot1.png">
+		src="https://github.com/allenarduino/Node_social/blob/main/screenshots/screenshot1.png">
 <img
 		width="210"
 		alt="Capture 2"
