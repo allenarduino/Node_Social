@@ -15,7 +15,8 @@ Social Meidia App - React Native (Expo) and NodeJS
 **Perfect to start a social media app**
 
 More features will be added to the project in the future.
-
+## Demo video on YouTube:
+### [Video](https://youtu.be/mbOpckN7DAo)
 ## Screenshots
 
 <img
